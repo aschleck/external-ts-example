@@ -1,0 +1,27 @@
+module(name = "external_ts_example", version = "0.0.0", compatibility_level = 1)
+
+# Include rules_ts with a patch to enable depping on other repository's rules
+bazel_dep(name = "aspect_rules_ts")
+archive_override(
+    module_name = "aspect_rules_ts",
+    integrity = "sha256-QmNTKy+00W8wnYDjWXGRocsvtpwZ6V2RcRvWuXh0cF4=",
+    patches = ["aspect_rules_ts.patch"],
+    strip_prefix = "rules_ts-3.5.0",
+    urls = ["https://github.com/aspect-build/rules_ts/archive/refs/tags/v3.5.0.tar.gz"],
+)
+
+# A random Git repository that exposes ts_project rules that we can depend on
+bazel_dep(name = "dev_april_corgi")
+archive_override(
+    module_name = "dev_april_corgi",
+    integrity = "sha256-6BJzweLkNyEZoTfjFRl+/1MiDDbNSHGW3Xsdlhx0SX0=",
+    strip_prefix = "corgi-b03ef36dfc6fc5d0eef461803668cbfd261cbb2b",
+    urls = ["https://github.com/aschleck/corgi/archive/b03ef36dfc6fc5d0eef461803668cbfd261cbb2b.tar.gz"],
+)
+
+# Needed for reasons that I don't really understand
+rules_ts_ext = use_extension("@aspect_rules_ts//ts:extensions.bzl", "ext", isolate = True)
+
+rules_ts_ext.deps()
+
+use_repo(rules_ts_ext, "npm_typescript")

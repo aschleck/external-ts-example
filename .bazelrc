@@ -1,0 +1,3 @@
+common --@aspect_rules_ts//ts:default_to_tsc_transpiler
+common --@aspect_rules_ts//ts:skipLibCheck=honor_tsconfig
+common --experimental_isolated_extension_usages
